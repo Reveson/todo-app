@@ -1,7 +1,11 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class MainPanel extends JPanel {
+    Logger logger = LoggerFactory.getLogger(MainPanel.class);
     private static MainPanel mainPanel;
     //TODO te parametry mają być z pliku properrties!
     private static int WINDOW_WIDTH = 1024;
@@ -23,12 +27,8 @@ public class MainPanel extends JPanel {
     }
 
     private void initWindow() {
-        setFocusable(true);
-        setDoubleBuffered(true);
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        setAlignmentY(Component.TOP_ALIGNMENT);
-//        setLayout(new FlowLayout(FlowLayout.LEFT));
-//        setLayout(new GridBagLayout());
+        logger.debug("Window dimensions set to {} x {}.", WINDOW_WIDTH, WINDOW_HEIGHT);
         setLayout(null);
     }
 

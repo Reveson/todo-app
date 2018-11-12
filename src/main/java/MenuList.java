@@ -1,3 +1,6 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -9,6 +12,7 @@ import java.util.function.Consumer;
 
 public abstract class MenuList {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
     private JList list;
     public final JPanel panel;
     private int width;
@@ -22,6 +26,7 @@ public abstract class MenuList {
     }
 
     protected void init(String[] fields) {
+        logger.info("Initializing new list.");
         this.fields = Arrays.copyOf(fields, fields.length);
         actions = new Consumer[this.fields.length];
         list = new JList(fields);
@@ -30,6 +35,7 @@ public abstract class MenuList {
         list.setFont(new Font(currentFont.getName(), currentFont.getStyle(), 4*6));
         addMouseListener();
         panel.add(list);
+        logger.debug("New list with fields: {} added to JPanel.", (Object)fields);
     }
 
     protected void setListDimensions(int x, int y, int width, int height) {
@@ -51,6 +57,7 @@ public abstract class MenuList {
     }
 
     public String[] getFields() {
+
         return Arrays.copyOf(fields, fields.length);
     }
 
@@ -64,6 +71,8 @@ public abstract class MenuList {
                 }
             }
         });
+        logger.debug("Added mouse listener.");
+
         list.addListSelectionListener((e) -> {
             if(e.getValueIsAdjusting() == false) {
                 int index = e.getFirstIndex();
@@ -77,11 +86,13 @@ public abstract class MenuList {
 
             }
         });
+        logger.debug("Added list selection listener.");
     }
 
     protected void discard() {
         panel.remove(list);
         panel.repaint();
+        logger.info("Removed list from JPanel.");
     }
 
 
@@ -89,6 +100,7 @@ public abstract class MenuList {
         for(int i = 0; i < fields.length; i++) {
             if(field.compareTo(fields[i]) == 0) {
                 actions[i] = action;
+                logger.debug("New action successfully added to {}.", field);
                 return;
             }
         }

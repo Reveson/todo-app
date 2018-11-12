@@ -8,7 +8,6 @@ public class SideMenuList extends MenuList {
 
     public static SideMenuList initList(JPanel panel) {
         sideMenuList = new SideMenuList(panel, fields);
-        sideMenuList.initListFields();
         return sideMenuList;
     }
 
@@ -33,8 +32,17 @@ public class SideMenuList extends MenuList {
             }
         });
 
-
         setAction("Categories", (selected) -> {
+            if(selected) {
+                initNewList(CategoriesList.initList(panel));
+            }
+            else {
+                CategoriesList.getList().discard();
+                System.out.println("removing categories");
+            }
+        });
+
+        setAction("Priority", (selected) -> {
             if(selected) {
                 initNewList(CategoriesList.initList(panel));
             }

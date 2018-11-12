@@ -4,10 +4,15 @@
 // http://www.jvider.com/
 //======================================================
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JFrame;
 import java.awt.*;
 
 public class TodoHelper extends JFrame {
+
+    private Logger logger = LoggerFactory.getLogger(TodoHelper.class);
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -21,8 +26,13 @@ public class TodoHelper extends JFrame {
     }
 
     private void initGUI() {
+        logger.info("Initializing JFrame window");
         add(MainPanel.getMainPanel());
-        setResizable(false);
+        logger.debug("Adding JPanel to Frame");
+        Boolean resizable = false;
+        setResizable(resizable);
+        logger.debug("Resizable parameter set to {}", resizable);
+        setFocusable(true);
         pack();
         setTitle("TODO Helper");
         setLocationRelativeTo(null);
