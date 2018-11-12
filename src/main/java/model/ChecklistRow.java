@@ -1,6 +1,9 @@
-public abstract class TaskElement {
+package model;
+
+public class ChecklistRow {
     private long id;
     private String text;
+    private boolean checked;
 
     public long getId() {
         return id;
@@ -16,5 +19,13 @@ public abstract class TaskElement {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }

@@ -1,3 +1,5 @@
+package model;
+
 public class Categories {
     private long id;
     private long name;

@@ -1,8 +1,10 @@
+package app;
+
 import org.aeonbits.owner.Config;
 
 import java.util.Locale;
 
-//@Config.Sources({"../resources/AppConfig.properties"})
+//@Config.Sources({"../resources/app.AppConfig.properties"})
 public interface AppConfig extends Config {
     @DefaultValue("800")
     int windowWidth();

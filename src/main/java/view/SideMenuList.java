@@ -1,3 +1,6 @@
+package view;
+
+import app.AppConfig;
 import org.aeonbits.owner.ConfigFactory;
 
 import javax.swing.*;
