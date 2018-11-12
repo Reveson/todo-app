@@ -80,7 +80,6 @@ public abstract class MenuList {
                     index = e.getLastIndex();
                 }
                 if(!list.isSelectedIndex(index)) {
-                    System.out.println(index);
                     actions[index].accept(false);
                 }
 

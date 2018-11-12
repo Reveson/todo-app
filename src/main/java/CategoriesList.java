@@ -3,7 +3,7 @@ import javax.swing.*;
 public class CategoriesList extends MenuList {
     private static CategoriesList categoriesList;
 
-    //TODO z properties
+    //TODO z web service
     private static String[] fields = new String[] {"C1", "Cat2", "Category3", "Categoryyy4"};
 
     public static CategoriesList initList(JPanel panel) {

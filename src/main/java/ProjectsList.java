@@ -3,7 +3,7 @@ import javax.swing.*;
 public class ProjectsList extends MenuList {
     private static ProjectsList projectsList;
 
-    //TODO z properties
+    //TODO z web service
     private static String[] fields = new String[] {"P1", "Pr2", "Project3"};
 
     public static ProjectsList initList(JPanel panel) {

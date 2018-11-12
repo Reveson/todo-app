@@ -1,3 +1,4 @@
+import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -6,10 +7,9 @@ import java.awt.*;
 
 public class MainPanel extends JPanel {
     Logger logger = LoggerFactory.getLogger(MainPanel.class);
+    AppConfig config = ConfigFactory.create(AppConfig.class);
+
     private static MainPanel mainPanel;
-    //TODO te parametry mają być z pliku properrties!
-    private static int WINDOW_WIDTH = 1024;
-    private static int WINDOW_HEIGHT = 720;
 
     private MainPanel() {
 
@@ -27,13 +27,13 @@ public class MainPanel extends JPanel {
     }
 
     private void initWindow() {
-        setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        logger.debug("Window dimensions set to {} x {}.", WINDOW_WIDTH, WINDOW_HEIGHT);
+        setPreferredSize(new Dimension(config.windowWidth(), config.windowHeight()));
+        logger.debug("Window dimensions set to {} x {}.", config.windowWidth(), config.windowHeight());
         setLayout(null);
     }
 
     private void initSideMenuList() {
-        SideMenuList.initList(this).setListDimensions(0,0, WINDOW_WIDTH/6, WINDOW_HEIGHT/2);
+        SideMenuList.initList(this).setListDimensions(0,0, config.windowWidth()/6, config.windowHeight()/2);
     }
 
     private void initCalendar() {

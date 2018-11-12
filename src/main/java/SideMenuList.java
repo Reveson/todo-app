@@ -1,10 +1,21 @@
+import org.aeonbits.owner.ConfigFactory;
+
 import javax.swing.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class SideMenuList extends MenuList {
     private static SideMenuList sideMenuList;
 
-    //TODO z pliku properties
-    private static String[] fields = new String[]{"Projects", "Categories", "Priority", "Friends", "Settings"};
+    private static AppConfig config = ConfigFactory.create(AppConfig.class);
+    private static ResourceBundle text = ResourceBundle
+            .getBundle("lang", new Locale(config.language(), config.country()));
+    private static String[] fields =
+            new String[]{text.getString("projects"),
+                    text.getString("categories"),
+                    text.getString("priorities"),
+                    text.getString("friends"),
+                    text.getString("settings")};
 
     public static SideMenuList initList(JPanel panel) {
         sideMenuList = new SideMenuList(panel, fields);
@@ -22,35 +33,24 @@ public class SideMenuList extends MenuList {
     }
 
     private void initListFields() {
-        setAction("Projects", (selected) -> {
+        setAction(text.getString("projects"), (selected) -> {
             if(selected) {
                 initNewList(ProjectsList.initList(panel));
             }
             else {
                 ProjectsList.getList().discard();
-                System.out.println("removing projects");
             }
         });
 
-        setAction("Categories", (selected) -> {
+        setAction(text.getString("categories"), (selected) -> {
             if(selected) {
                 initNewList(CategoriesList.initList(panel));
             }
             else {
                 CategoriesList.getList().discard();
-                System.out.println("removing categories");
             }
         });
 
-        setAction("Priority", (selected) -> {
-            if(selected) {
-                initNewList(CategoriesList.initList(panel));
-            }
-            else {
-                CategoriesList.getList().discard();
-                System.out.println("removing categories");
-            }
-        });
     }
 
     private void initNewList(MenuList list) {
