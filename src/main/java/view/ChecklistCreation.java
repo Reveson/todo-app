@@ -1,7 +1,5 @@
 package view;
 
-import model.ChecklistRow;
-import org.jdesktop.swingx.JXPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +11,6 @@ public class ChecklistCreation extends JComponent {
     private int rowWidth, rowHeight;
 
     public ChecklistCreation() {
-//        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-//        this.setLayout(new FlowLayout());
-        //this.setLayout(new BorderLayout());
         this.setLayout(null);
         addRow();
     }
@@ -28,7 +23,7 @@ public class ChecklistCreation extends JComponent {
         this.setSize(getWidth(),getHeight()+rowHeight);
         this.setMaximumSize(this.getSize());
         addListeners(newRow);
-        repaintParent(this);
+        SwingUtil.repaintParent(this);
     }
 
     private void addListeners(ChecklistCreationRow row) {
@@ -71,24 +66,38 @@ public class ChecklistCreation extends JComponent {
         setRowSize(width, rowHeight);
     }
 
-    private void repaintParent(JComponent component)
-    {
 
-        // Get the parent of the component.
-        JComponent parentComponent = (JComponent)SwingUtilities.getAncestorOfClass(JComponent.class, component);
+    private class ChecklistCreationRow extends JComponent {
+        private JTextField textfield;
+        private JButton xButton;
 
-        // Could we find a parent?
-        if (parentComponent != null)
-        {
-            // Repaint the parent.
-            parentComponent.revalidate();
-            parentComponent.repaint();
+        public ChecklistCreationRow() {
+            textfield = new JTextField();
+            xButton = new JButton("X");
+            this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+            xButton.setEnabled(false);
+            this.add(textfield);
+            this.add(xButton);
         }
-        else
-        {
-            // Repaint the component itself.
-            component.revalidate();
-            component.repaint();
+
+        @Override
+        public void setBounds(int x, int y, int width, int height) {
+            super.setBounds(x,y,width,height);
+
+            Font oldFont = textfield.getFont();
+            Font scaledFont = new Font(oldFont.getName(), oldFont.getStyle(), height/2);
+            textfield.setFont(scaledFont);
+
+            xButton.setSize(xButton.getWidth(),height);
+            xButton.setMaximumSize(xButton.getSize());
+        }
+
+        public JTextField getTextfield() {
+            return textfield;
+        }
+
+        public JButton getxButton() {
+            return xButton;
         }
 
     }

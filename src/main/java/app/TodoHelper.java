@@ -4,15 +4,21 @@ package app;
 // http://www.jvider.com/
 //======================================================
 
+import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.MainPanel;
 
 import javax.swing.JFrame;
 import java.awt.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class TodoHelper extends JFrame {
 
+    private AppConfig config = ConfigFactory.create(AppConfig.class);
+    private ResourceBundle text = ResourceBundle
+            .getBundle("lang", new Locale(config.language(), config.country()));
     private Logger logger = LoggerFactory.getLogger(TodoHelper.class);
 
     public static void main(String[] args) {

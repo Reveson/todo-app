@@ -14,4 +14,5 @@ public interface AppConfig extends Config {
     String language();
     @DefaultValue("US")
     String country();
+    String lorem();
 }

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -65,12 +66,32 @@ public class MainPanel extends JPanel {
     }
 
     private void initUserBtn() {
-        //TODO
-//        ChecklistCreationRow checklistRow = new ChecklistCreationRow();
-//        checklistRow.setBounds(400,400,200,50);
-//        add(checklistRow);
+        //TODO make a user button, that redirects to user panel
+
+
+        //TODO To be removed, just testing here
         ChecklistCreation cList = new ChecklistCreation();
         add(cList);
         cList.setBounds(400,400,200,30);
+
+        TaskNote note = new TaskNote("Username", Instant.now(), config.lorem());
+        add(note);
+        note.setBounds(700,200,300,250);
+
+        TaskChecklist list =
+                new TaskChecklist("Username",
+                        Instant.now(),
+                        new String[] {"field1", "field2", "field3", "fielddd4"});
+        add(list);
+        list.setBounds(300,50,300,250);
+
+        TaskMenu taskMenu = new TaskMenu();
+        add(taskMenu);
+        int taskWidth = (int)(config.windowWidth()*0.25);
+        int taskHeight = config.windowHeight();
+        taskMenu.setBounds(config.windowWidth()-taskWidth,
+                0,
+                taskWidth,
+                taskHeight);
     }
 }
