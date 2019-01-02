@@ -35,7 +35,8 @@ public abstract class MenuList {
         Font currentFont = list.getFont();
         list.setFont(new Font(currentFont.getName(), currentFont.getStyle(), 4*6));
         addMouseListener();
-        panel.add(list);
+        //TODO still doesnt work
+        panel.add(list, JLayeredPane.PALETTE_LAYER);
         logger.debug("New list with fields: {} added to JPanel.", (Object)fields);
     }
 

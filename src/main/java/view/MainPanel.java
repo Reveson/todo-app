@@ -70,28 +70,40 @@ public class MainPanel extends JPanel {
 
 
         //TODO To be removed, just testing here
-        ChecklistCreation cList = new ChecklistCreation();
-        add(cList);
-        cList.setBounds(400,400,200,30);
-
-        TaskNote note = new TaskNote("Username", Instant.now(), config.lorem());
-        add(note);
-        note.setBounds(700,200,300,250);
-
-        TaskChecklist list =
-                new TaskChecklist("Username",
-                        Instant.now(),
-                        new String[] {"field1", "field2", "field3", "fielddd4"});
-        add(list);
-        list.setBounds(300,50,300,250);
-
+//        ChecklistCreation cList = new ChecklistCreation();
+//        add(cList);
+//        cList.setBounds(400,400,200,30);
+//
+//        TaskNote note = new TaskNote("Username", Instant.now(), config.lorem());
+//        add(note);
+//        note.setBounds(700,200,300,250);
+//
+//        TaskChecklist list =
+//                new TaskChecklist("Username",
+//                        Instant.now(),
+//                        new String[] {"field1", "field2", "field3", "fielddd4"});
+//        add(list);
+//        list.setBounds(300,50,300,250);
+//
         TaskMenu taskMenu = new TaskMenu();
+        int taskMenuWidth = (int)(config.windowWidth()*0.25);
+        int taskMenuHeight = config.windowHeight();
+        taskMenu.setBounds(config.windowWidth()-taskMenuWidth,
+                0,
+                taskMenuWidth,
+                taskMenuHeight);
         add(taskMenu);
-        int taskWidth = (int)(config.windowWidth()*0.25);
+
+        Task task = new Task();
+        int taskWidth = (int)(config.windowWidth() - taskMenuWidth - config.windowWidth()/6);
         int taskHeight = config.windowHeight();
-        taskMenu.setBounds(config.windowWidth()-taskWidth,
+        add(task);
+
+        task.setBounds(config.windowWidth()/6,
                 0,
                 taskWidth,
                 taskHeight);
+
+
     }
 }
