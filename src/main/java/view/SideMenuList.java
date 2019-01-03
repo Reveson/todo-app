@@ -1,6 +1,7 @@
 package view;
 
 import app.AppConfig;
+import model.Categories;
 import org.aeonbits.owner.ConfigFactory;
 
 import javax.swing.*;
@@ -22,6 +23,8 @@ public class SideMenuList extends MenuList {
 
     public static SideMenuList initList(JPanel panel) {
         sideMenuList = new SideMenuList(panel, fields);
+        ProjectsList.initList(panel);
+        CategoriesList.initList(panel);
         return sideMenuList;
     }
 
@@ -38,7 +41,7 @@ public class SideMenuList extends MenuList {
     private void initListFields() {
         setAction(text.getString("projects"), (selected) -> {
             if(selected) {
-                initNewList(ProjectsList.initList(panel));
+                initNewList(ProjectsList.getList());
             }
             else {
                 ProjectsList.getList().discard();
@@ -47,7 +50,7 @@ public class SideMenuList extends MenuList {
 
         setAction(text.getString("categories"), (selected) -> {
             if(selected) {
-                initNewList(CategoriesList.initList(panel));
+                initNewList(CategoriesList.getList());
             }
             else {
                 CategoriesList.getList().discard();
@@ -61,6 +64,6 @@ public class SideMenuList extends MenuList {
         int newListHeight = (int) (fieldHeight * list.getFields().length * 0.8);
         int yPosition = 0;//fieldHeight;
         list.setListDimensions(getWidth(), yPosition, (int) (getWidth() * 0.8), newListHeight);
-
+        list.show();
     }
 }

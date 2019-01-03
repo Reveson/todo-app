@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -35,8 +36,8 @@ public abstract class MenuList {
         Font currentFont = list.getFont();
         list.setFont(new Font(currentFont.getName(), currentFont.getStyle(), 4*6));
         addMouseListener();
-        //TODO still doesnt work
-        panel.add(list, JLayeredPane.PALETTE_LAYER);
+        panel.add(list);
+//        panel.repaint();
         logger.debug("New list with fields: {} added to JPanel.", (Object)fields);
     }
 
@@ -63,37 +64,50 @@ public abstract class MenuList {
         return Arrays.copyOf(fields, fields.length);
     }
 
-    protected void addMouseListener() {
+    private void addMouseListener() {
         list.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int index = list.locationToIndex(e.getPoint());
                 if (index != -1) {
-                    Boolean selected = list.isSelectedIndex(index);
-                    actions[index].accept(selected);
+//                    for(int i = 0; i < 2; i++) {
+//                        if(i != index) {
+//                            actions[i].accept(false);
+//                        }
+//                    }
+                    for(int i = 0; i < 2; i++) {
+                        Boolean selected = list.isSelectedIndex(i);
+                        actions[i].accept(selected);
+                    }
                 }
             }
         });
         logger.debug("Added mouse listener.");
 
-        list.addListSelectionListener((e) -> {
-            if(e.getValueIsAdjusting() == false) {
-                int index = e.getFirstIndex();
-                if(list.isSelectedIndex(index)) {
-                    index = e.getLastIndex();
-                }
-                if(!list.isSelectedIndex(index)) {
-                    actions[index].accept(false);
-                }
-
-            }
-        });
+//        list.addListSelectionListener((e) -> {
+//            if(!e.getValueIsAdjusting()) {
+//                int index = e.getFirstIndex();
+//                if(list.isSelectedIndex(index)) {
+//                    index = e.getLastIndex();
+//                }
+//                if(!list.isSelectedIndex(index)) {
+//                    actions[index].accept(false);
+//                }
+//
+//            }
+//        });
         logger.debug("Added list selection listener.");
     }
 
     protected void discard() {
-        panel.remove(list);
-        panel.repaint();
+        list.setVisible(false);
+        logger.info("list elements: "+list.getModel().getElementAt(0));
         logger.info("Removed list from JPanel.");
+        //TODO to be deleted
+    }
+
+    protected void show() {
+        list.setVisible(true);
+        logger.info("Added list to JPanel.");
     }
 
 
