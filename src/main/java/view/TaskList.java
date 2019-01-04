@@ -1,36 +1,28 @@
 package view;
 
+import model.Task;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
-public class Task extends JPanel {
+
+public class TaskList extends JPanel {
 
     private CheckBoxList checkBoxList;
-    private DefaultListModel<JCheckBox> model;
     private JScrollPane scrollPane;
+    private List<Task> taskList;
 
-    public Task() {
+    public TaskList(List<Task> taskList) {
+
+        this.taskList = taskList;
 
         initAllComponents();
-
-        JCheckBox newCheckBox = new JCheckBox("testing here");
-//        Icon normal = createImageIcon("/img/beznazwy.png", "checkbox-outline");
-//        Icon selected = createImageIcon("/img/checkbox-outline-blank.svg", "checkbox-outline-blank");
-//        newCheckBox.setIcon(normal);
-
-//        ListCellRenderer renderer = new ComplexCellRenderer();
-//        checkBoxList.setCellRenderer(renderer);
-
-        model.addElement(newCheckBox);
-        model.addElement(new JCheckBox("Checkbox1"));
-        model.addElement(new JCheckBox("Checkbox2"));
-        model.addElement(new JCheckBox("Checkbox3"));
-//        model.addElement(new JCheckBox("Checkbox1"));
-//        model.addElement(new JCheckBox("Checkbox2"));
-//        model.addElement(new JCheckBox("Checkbox3"));
-//        model.addElement(new JCheckBox("Checkbox1"));
-//        model.addElement(new JCheckBox("Checkbox2"));
-//        model.addElement(new JCheckBox("Checkbox3"));
+        initAllListFields();
+//
+//        JCheckBox newCheckBox = new JCheckBox("testing here");
+//
+//        model.addElement(newCheckBox);
 //        model.addElement(new JCheckBox("Checkbox1"));
 //        model.addElement(new JCheckBox("Checkbox2"));
 //        model.addElement(new JCheckBox("Checkbox3"));
@@ -54,8 +46,7 @@ public class Task extends JPanel {
     }
 
     private void initAllComponents() {
-        model = new DefaultListModel<JCheckBox>();
-        checkBoxList = new CheckBoxList(model);
+        checkBoxList = CheckBoxList.getNewList();
 
         JPanel panel = new JPanel();
 //        panel.add(checkBoxList);
@@ -72,6 +63,15 @@ public class Task extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
+    }
+
+    private void initAllListFields() {
+        if(taskList != null && taskList.size() > 0) {
+            for(Task task : taskList) {
+                checkBoxList.addElement(task);
+                //TODO add functionallity to view task details
+            }
+        }
     }
 
 }

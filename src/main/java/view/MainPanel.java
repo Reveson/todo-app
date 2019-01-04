@@ -1,18 +1,19 @@
 package view;
 
 import app.AppConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import controller.TaskController;
+import model.Task;
 import org.aeonbits.owner.ConfigFactory;
-import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXMonthView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -94,7 +95,13 @@ public class MainPanel extends JPanel {
                 taskMenuHeight);
         add(taskMenu);
 
-        Task task = new Task();
+        ArrayList<Task> taskList = new ArrayList<>();
+        for(int i = 0; i < 4; i++) {
+            Task taskToAdd = new Task();
+            taskToAdd.setName("zadanie "+(i+1));
+            taskList.add(taskToAdd);
+        }
+        TaskList task = new TaskList(taskList);
         int taskWidth = (int)(config.windowWidth() - taskMenuWidth - config.windowWidth()/6);
         int taskHeight = config.windowHeight();
         add(task);
