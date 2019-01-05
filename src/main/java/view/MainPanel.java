@@ -1,18 +1,19 @@
 package view;
 
 import app.AppConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import controller.TaskController;
+import model.Task;
 import org.aeonbits.owner.ConfigFactory;
-import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXMonthView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -70,29 +71,46 @@ public class MainPanel extends JPanel {
 
 
         //TODO To be removed, just testing here
-        ChecklistCreation cList = new ChecklistCreation();
-        add(cList);
-        cList.setBounds(400,400,200,30);
-
-        TaskNote note = new TaskNote("Username", Instant.now(), config.lorem());
-        add(note);
-        note.setBounds(700,200,300,250);
-
-        TaskChecklist list =
-                new TaskChecklist("Username",
-                        Instant.now(),
-                        new String[] {"field1", "field2", "field3", "fielddd4"});
-        add(list);
-        list.setBounds(300,50,300,250);
-
-        TaskMenu taskMenu = new TaskMenu(null);
+//        ChecklistCreation cList = new ChecklistCreation();
+//        add(cList);
+//        cList.setBounds(400,400,200,30);
+//
+//        TaskNote note = new TaskNote("Username", Instant.now(), config.lorem());
+//        add(note);
+//        note.setBounds(700,200,300,250);
+//
+//        TaskChecklist list =
+//                new TaskChecklist("Username",
+//                        Instant.now(),
+//                        new String[] {"field1", "field2", "field3", "fielddd4"});
+//        add(list);
+//        list.setBounds(300,50,300,250);
+//
+        TaskMenu taskMenu = new TaskMenu();
+        int taskMenuWidth = (int)(config.windowWidth()*0.25);
+        int taskMenuHeight = config.windowHeight();
+        taskMenu.setBounds(config.windowWidth()-taskMenuWidth,
+                0,
+                taskMenuWidth,
+                taskMenuHeight);
         add(taskMenu);
-        int taskWidth = (int)(config.windowWidth()*0.25);
+
+        ArrayList<Task> taskList = new ArrayList<>();
+        for(int i = 0; i < 4; i++) {
+            Task taskToAdd = new Task();
+            taskToAdd.setName("zadanie "+(i+1));
+            taskList.add(taskToAdd);
+        }
+        TaskList task = new TaskList(taskList);
+        int taskWidth = (int)(config.windowWidth() - taskMenuWidth - config.windowWidth()/6);
         int taskHeight = config.windowHeight();
-        taskMenu.setBounds(config.windowWidth()-taskWidth,
+        add(task);
+
+        task.setBounds(config.windowWidth()/6,
                 0,
                 taskWidth,
                 taskHeight);
-        taskMenu.initUpperMenu();
+
+
     }
 }

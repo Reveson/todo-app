@@ -17,6 +17,7 @@ public class ProjectsList extends MenuList {
         if(projectsList == null) throw new NullPointerException("You need to init list first!");
         return projectsList;
     }
+
     private ProjectsList(JPanel panel, String[] fields) {
         super(panel, fields);
         //initListFields();
