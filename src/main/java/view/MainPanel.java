@@ -85,7 +85,7 @@ public class MainPanel extends JPanel {
         add(list);
         list.setBounds(300,50,300,250);
 
-        TaskMenu taskMenu = new TaskMenu();
+        TaskMenu taskMenu = new TaskMenu(null);
         add(taskMenu);
         int taskWidth = (int)(config.windowWidth()*0.25);
         int taskHeight = config.windowHeight();
@@ -93,5 +93,6 @@ public class MainPanel extends JPanel {
                 0,
                 taskWidth,
                 taskHeight);
+        taskMenu.initUpperMenu();
     }
 }

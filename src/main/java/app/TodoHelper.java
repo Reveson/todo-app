@@ -29,6 +29,7 @@ public class TodoHelper extends JFrame {
     }
 
     private TodoHelper() {
+
         initGUI();
     }
 
