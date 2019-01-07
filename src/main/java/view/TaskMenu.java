@@ -19,7 +19,9 @@ import java.util.regex.Pattern;
 
 public class TaskMenu extends JPanel {
 
-    private Task task;
+    private static TaskMenu taskMenu;
+    private static Task task;
+
     private JLabel taskName;
 
     private JButton deadlineBox;
@@ -32,21 +34,56 @@ public class TaskMenu extends JPanel {
     private JButton textButton;
     private JButton checklistButton;
     private JTextArea textInput;
+    private ChecklistCreation checklistCreation;
+    private JButton taskInfoAddButton;
+
+    private int upperMenuYCoordEnd;
 
     private AppConfig config = ConfigFactory.create(AppConfig.class);
     private ResourceBundle text = ResourceBundle
             .getBundle("lang", new Locale(config.language(), config.country()));
     Logger logger = LoggerFactory.getLogger(MainPanel.class);
 
-    public TaskMenu(Task task) {
+    public static TaskMenu getTaskMenu(Task task) {
+        if (TaskMenu.task != task || TaskMenu.task == null) { //this is correct, it should be the same (!) object, not just equal
+            if(taskMenu != null)
+                MainPanel.getMainPanel().remove(TaskMenu.taskMenu);
+            TaskMenu.taskMenu = new TaskMenu(task);
+            MainPanel.getMainPanel().add(taskMenu);
+            MainPanel.getMainPanel().revalidate();
+            MainPanel.getMainPanel().repaint();
+        }
+        return taskMenu;
+    }
+
+    private TaskMenu(Task task) {
         //TODO check if null
-        this.task = task;
+        TaskMenu.task = task;
         //TODO this needs to be removed, its just for visual testing
         setBackground(Color.gray);
         this.setLayout(null);
     }
 
-    public void initUpperMenu() {
+    public void init() {
+        initTitle();
+        initUpperMenu();
+        initMiddleMenu();
+    }
+
+    private void initTitle() {
+        String htmlText = "<html><div style='text-align: center;'>" + task.getName() + "</div></html>";
+        taskName = new JLabel(htmlText, SwingConstants.CENTER);
+        int menuWidth = this.getWidth();
+        int yBorder = (int)(menuWidth*0.15);
+        Font oldFont = taskName.getFont();
+        //TODO scale this font according to project name lenght
+        Font scaledFont = new Font(oldFont.getName(), oldFont.getStyle(), (int)(yBorder*0.8));
+        taskName.setBounds(0,0,menuWidth,yBorder);
+        taskName.setFont(scaledFont);
+        this.add(taskName);
+    }
+
+    private void initUpperMenu() {
         deadlineBox = new JButton(text.getString("deadline"));
         timeNeededBox = new JButton(text.getString("timeNeeded"));
         repeatEveryBox = new JButton(text.getString("repeatEvery"));
@@ -61,11 +98,11 @@ public class TaskMenu extends JPanel {
         int componentHeight = (int)(menuWidth*0.1);
         int firstColumnX = (int)(menuWidth*0.15);
         int gap = menuWidth - (componentWidth + firstColumnX)*2;
-        System.out.println(firstColumnX);
         int secondColumnX = firstColumnX+componentWidth+gap;
         int firstRowY = firstColumnX;
         int secondRowY = firstRowY+componentHeight+gap;
         int thirdRowY = secondRowY+componentHeight+gap;
+        upperMenuYCoordEnd = thirdRowY + componentHeight;
 
         deadlineBox.setBounds(firstColumnX, firstRowY, componentWidth, componentHeight);
         timeNeededBox.setBounds(firstColumnX, secondRowY, componentWidth, componentHeight);
@@ -83,6 +120,83 @@ public class TaskMenu extends JPanel {
         this.add(projectBox);
         this.add(categoryBox);
         this.add(priorityBox);
+    }
+
+    private void initMiddleMenu() {
+        textButton = new JButton(text.getString("taskMenuTxtButton"));
+        checklistButton = new JButton(text.getString("taskMenuListButton"));
+        taskInfoAddButton = new JButton();
+        textInput = new JTextArea();
+        checklistCreation = new ChecklistCreation(taskInfoAddButton);
+
+
+        int menuWidth = this.getWidth();
+        int componentWidth = (int)(menuWidth*0.45);
+        int componentHeight = (int)(menuWidth*0.08);
+        int menuYCoord = upperMenuYCoordEnd + componentHeight;
+        int menuXCoord = (menuWidth - componentWidth*2)/2;
+
+        textButton.setBounds(menuXCoord, menuYCoord, componentWidth, componentHeight);
+        checklistButton.setBounds(menuXCoord+componentWidth, menuYCoord, componentWidth, componentHeight);
+
+        textInput.setBounds(menuXCoord,menuYCoord+componentHeight, componentWidth*2, componentHeight*4);
+        textInput.setLineWrap(true);
+        textInput.setVisible(false);
+
+        checklistCreation.setBounds(menuXCoord,menuYCoord+componentHeight, componentWidth*2, componentHeight);
+        checklistCreation.setVisible(false);
+
+        taskInfoAddButton.setBounds(menuXCoord+(int)(1.3*componentWidth), menuYCoord, (int)(componentWidth*0.7), componentHeight);
+        taskInfoAddButton.setText(text.getString("taskMenuInfoApply"));
+        taskInfoAddButton.setVisible(false);
+
+        this.add(textButton);
+        this.add(checklistButton);
+        this.add(textInput);
+        this.add(checklistCreation);
+        this.add(taskInfoAddButton);
+
+        setListenersForMiddleMenu();
+
+    }
+
+    private void setListenersForMiddleMenu() {
+        textButton.addActionListener(this::textButtonButtonListener);
+        checklistButton.addActionListener(this::checklistButtonListener);
+        taskInfoAddButton.addActionListener(this::taskInfoAddButtonListener);
+    }
+
+    private void textButtonButtonListener(ActionEvent e) {
+        if(textInput.isVisible()) {
+            textInput.setVisible(false);
+            taskInfoAddButton.setVisible(false);
+
+        }
+        else {
+            checklistCreation.setVisible(false);
+            textInput.setVisible(true);
+            taskInfoAddButton.setVisible(true);
+            taskInfoAddButton.setLocation(taskInfoAddButton.getX(), textInput.getY()+textInput.getHeight());
+        }
+    }
+
+    private void checklistButtonListener(ActionEvent e) {
+        if(checklistCreation.isVisible()) {
+            checklistCreation.setVisible(false);
+            taskInfoAddButton.setVisible(false);
+        }
+        else {
+            textInput.setVisible(false);
+            checklistCreation.setVisible(true);
+            taskInfoAddButton.setLocation(taskInfoAddButton.getX(), checklistCreation.getY()+checklistCreation.getHeight());
+            taskInfoAddButton.setVisible(true);
+
+        }
+
+    }
+
+    private void taskInfoAddButtonListener(ActionEvent e) {
+
     }
 
     private void setListenersForUpperMenu() {

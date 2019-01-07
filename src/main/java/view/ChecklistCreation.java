@@ -9,8 +9,10 @@ import java.util.List;
 public class ChecklistCreation extends JComponent {
     private List<ChecklistCreationRow> checkFields = new ArrayList<>();
     private int rowWidth, rowHeight;
+    private JButton applyButton;
 
-    public ChecklistCreation() {
+    public ChecklistCreation(JButton applyButton) {
+        this.applyButton = applyButton;
         this.setLayout(null);
         addRow();
     }
@@ -22,20 +24,20 @@ public class ChecklistCreation extends JComponent {
         this.add(newRow, BorderLayout.PAGE_END);
         this.setSize(getWidth(),getHeight()+rowHeight);
         this.setMaximumSize(this.getSize());
+        applyButton.setLocation(applyButton.getX(), applyButton.getY()+rowHeight);
         addListeners(newRow);
         SwingUtil.repaintParent(this);
     }
+
 
     private void addListeners(ChecklistCreationRow row) {
         JTextField txtField = row.getTextfield();
         JButton btn = row.getxButton();
         txtField.addActionListener((event) -> {
-                    if(txtField.getText() != null || txtField.getText() != "") {
-                        addRow();
-                        txtField.removeActionListener(txtField.getActionListeners()[0]);
-                        btn.setEnabled(true);
-                    }
-                });
+            addRow();
+            txtField.removeActionListener(txtField.getActionListeners()[0]);
+            btn.setEnabled(true);
+        });
         btn.addActionListener((event) -> {
             int indexOfRemovedRow = checkFields.indexOf(row);
             for(int i = checkFields.size()-1 ; i > indexOfRemovedRow ; i--) {
@@ -45,6 +47,7 @@ public class ChecklistCreation extends JComponent {
             this.repaint();
             checkFields.remove(indexOfRemovedRow);
             this.setSize(getWidth(),getHeight()-rowHeight);
+            applyButton.setLocation(applyButton.getX(), applyButton.getY()-rowHeight);
         });
     }
 

@@ -15,4 +15,6 @@ public interface AppConfig extends Config {
     @DefaultValue("US")
     String country();
     String lorem();
+    String languageList();
+    String skinList();
 }

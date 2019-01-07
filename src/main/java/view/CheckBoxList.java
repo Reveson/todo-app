@@ -1,7 +1,9 @@
 package view;
 
+import app.AppConfig;
 import javafx.scene.control.CheckBox;
 import model.Task;
+import org.aeonbits.owner.ConfigFactory;
 
 import java.awt.*;
 
@@ -11,12 +13,17 @@ import javax.swing.border.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 @SuppressWarnings("serial")
 public class CheckBoxList extends JList<JCheckBox> {
     private static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
     private DefaultListModel<JCheckBox> model;
     private List<Task> listOfTasks = new ArrayList<>();
+    private AppConfig config = ConfigFactory.create(AppConfig.class);
+    private ResourceBundle text = ResourceBundle
+            .getBundle("lang", new Locale(config.language(), config.country()));
 
     private CheckBoxList() {
         setCellRenderer(new CellRenderer());
@@ -27,9 +34,13 @@ public class CheckBoxList extends JList<JCheckBox> {
                     switch(e.getClickCount()) {
                         case 1:
                             //there is no need for using loop, if indexes are equal
-                            String checkBoxText = getModel().getElementAt(index).getName();
-                            if(checkBoxText.equals(listOfTasks.get(index).getName())) {
+                            String checkBoxText = getModel().getElementAt(index).getText();
+                            System.out.println("AAA:"+checkBoxText);
+                            if(index < listOfTasks.size() && checkBoxText.equals(listOfTasks.get(index).getName())) {
                                 showTaskDetails(listOfTasks.get(index));
+                            }
+                            else if(checkBoxText.equals(text.getString("addNewTask"))) {
+                                addNewTask();
                             }
                             else {
                                 for(Task task : listOfTasks) {
@@ -54,12 +65,42 @@ public class CheckBoxList extends JList<JCheckBox> {
     }
 
     private void showTaskDetails(Task task) {
-        //TODO !!!
+        int taskMenuWidth = (int)(config.windowWidth()*0.25);
+        int taskMenuHeight = config.windowHeight();
+        TaskMenu taskMenu = TaskMenu.getTaskMenu(task);
+        taskMenu.setBounds(config.windowWidth()-taskMenuWidth,
+                0,
+                taskMenuWidth,
+                taskMenuHeight);
+        taskMenu.init();
     }
 
+    private void addNewTask() {
+        JTextField taskName = new JTextField();
+        Object[] fields = {
+                text.getString("newTaskPrompt"),
+                " ",
+                text.getString("taskNameInput"), taskName,
+        };
+
+        int buttonClicked = JOptionPane.showConfirmDialog(this, fields, text.getString("newTaskPrompt"),
+                JOptionPane.OK_CANCEL_OPTION);
+        if(buttonClicked == JOptionPane.DEFAULT_OPTION && !taskName.getText().equals("")) {
+            //TODO add new task here
+        }
+        else {
+            showErrorMessage();
+        }
+    }
+
+    private void showErrorMessage() {
+        JOptionPane.showMessageDialog(this, text.getString("addingTaskFailed"));
+    }
     private CheckBoxList(ListModel<JCheckBox> model){
         this();
         setModel(model);
+        JCheckBox newTaskButton = new JCheckBox(text.getString("addNewTask"));
+        this.model.addElement(newTaskButton);
     }
 
     @Override
@@ -74,8 +115,12 @@ public class CheckBoxList extends JList<JCheckBox> {
     }
 
     public void addElement(Task task) {
+        if(model.getSize() > 0)
+            model.removeElementAt(model.getSize()-1); //remove "add new task" button so this button will be the last one
         listOfTasks.add(task);
         model.addElement(new JCheckBox(task.getName()));
+        JCheckBox newTaskButton = new JCheckBox(text.getString("addNewTask"));
+        this.model.addElement(newTaskButton);
     }
 
     protected class CellRenderer implements ListCellRenderer<JCheckBox> {

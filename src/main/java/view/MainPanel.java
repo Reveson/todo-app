@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AWTEventListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +34,7 @@ public class MainPanel extends JPanel {
         initSideMenuList();
         initCalendar();
         initUserBtn();
+        initListHide();
     }
 
     public static MainPanel getMainPanel() {
@@ -66,6 +70,7 @@ public class MainPanel extends JPanel {
         this.add(calendar);
     }
 
+
     private void initUserBtn() {
         //TODO make a user button, that redirects to user panel
 
@@ -86,31 +91,48 @@ public class MainPanel extends JPanel {
 //        add(list);
 //        list.setBounds(300,50,300,250);
 //
-        TaskMenu taskMenu = new TaskMenu(new Task());
-        int taskMenuWidth = (int)(config.windowWidth()*0.25);
-        int taskMenuHeight = config.windowHeight();
-        taskMenu.setBounds(config.windowWidth()-taskMenuWidth,
-                0,
-                taskMenuWidth,
-                taskMenuHeight);
-        add(taskMenu);
+//        Task task2 = new Task();
+//        task2.setName("Project X");
+//        TaskMenu taskMenu = new TaskMenu(task2);
+//        int taskMenuWidth = (int)(config.windowWidth()*0.25);
+//        int taskMenuHeight = config.windowHeight();
+//        taskMenu.setBounds(config.windowWidth()-taskMenuWidth,
+//                0,
+//                taskMenuWidth,
+//                taskMenuHeight);
+//        taskMenu.init();
+//        add(taskMenu);
 
-        ArrayList<Task> taskList = new ArrayList<>();
-        for(int i = 0; i < 4; i++) {
-            Task taskToAdd = new Task();
-            taskToAdd.setName("zadanie "+(i+1));
-            taskList.add(taskToAdd);
-        }
-        TaskList task = new TaskList(taskList);
-        int taskWidth = (int)(config.windowWidth() - taskMenuWidth - config.windowWidth()/6);
-        int taskHeight = config.windowHeight();
-        add(task);
+//        ArrayList<Task> taskList = new ArrayList<>();
+//        for(int i = 0; i < 4; i++) {
+//            Task taskToAdd = new Task();
+//            taskToAdd.setName("zadanie "+(i+1));
+//            taskList.add(taskToAdd);
+//        }
+//        TaskList task = new TaskList(taskList);
+//        int taskWidth = (int)(config.windowWidth() - taskMenuWidth - config.windowWidth()/6);
+//        int taskHeight = config.windowHeight();
+//        add(task);
+//
+//        task.setBounds(config.windowWidth()/6,
+//                0,
+//                taskWidth,
+//                taskHeight);
 
-        task.setBounds(config.windowWidth()/6,
-                0,
-                taskWidth,
-                taskHeight);
 
+    }
 
+    private void initListHide() {
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+            public void eventDispatched(AWTEvent event) {
+                if(event instanceof MouseEvent){
+                    MouseEvent evt = (MouseEvent)event;
+                    if(evt.getID() == MouseEvent.MOUSE_CLICKED){
+                        System.out.println("mouse clicked at: " + evt.getPoint());
+                        ProjectsList.getList().checkIfShouldBeClosed(evt.getPoint());
+                    }
+                }
+            }
+        }, AWTEvent.MOUSE_EVENT_MASK);
     }
 }

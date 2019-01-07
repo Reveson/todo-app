@@ -15,12 +15,13 @@ import java.util.function.Consumer;
 public abstract class MenuList {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    private JList list;
+    protected JList list;
     public final JPanel panel;
     private int width;
     private int height;
     private String[] fields;
     private Consumer[] actions;
+    protected boolean canBeHidden = false;
 
     protected MenuList(JPanel panel, String[] fields) {
         this.panel = panel;
@@ -39,6 +40,13 @@ public abstract class MenuList {
         panel.add(list);
 //        panel.repaint();
         logger.debug("New list with fields: {} added to JPanel.", (Object)fields);
+    }
+
+    protected void refresh(String[] fields) {
+        panel.remove(list);
+        init(fields);
+        panel.revalidate();
+        panel.repaint();
     }
 
     protected void setListDimensions(int x, int y, int width, int height) {
@@ -69,12 +77,7 @@ public abstract class MenuList {
             public void mousePressed(MouseEvent e) {
                 int index = list.locationToIndex(e.getPoint());
                 if (index != -1) {
-//                    for(int i = 0; i < 2; i++) {
-//                        if(i != index) {
-//                            actions[i].accept(false);
-//                        }
-//                    }
-                    for(int i = 0; i < 2; i++) {
+                    for(int i = 0; i < actions.length; i++) {
                         Boolean selected = list.isSelectedIndex(i);
                         actions[i].accept(selected);
                     }
@@ -82,19 +85,6 @@ public abstract class MenuList {
             }
         });
         logger.debug("Added mouse listener.");
-
-//        list.addListSelectionListener((e) -> {
-//            if(!e.getValueIsAdjusting()) {
-//                int index = e.getFirstIndex();
-//                if(list.isSelectedIndex(index)) {
-//                    index = e.getLastIndex();
-//                }
-//                if(!list.isSelectedIndex(index)) {
-//                    actions[index].accept(false);
-//                }
-//
-//            }
-//        });
         logger.debug("Added list selection listener.");
     }
 
@@ -108,12 +98,13 @@ public abstract class MenuList {
     protected void show() {
         list.setVisible(true);
         logger.info("Added list to JPanel.");
+        canBeHidden = false;
     }
 
 
     public void setAction(String field, Consumer<Boolean> action) {
         for(int i = 0; i < fields.length; i++) {
-            if(field.compareTo(fields[i]) == 0) {
+            if(field.equals(fields[i])) {
                 actions[i] = action;
                 logger.debug("New action successfully added to {}.", field);
                 return;

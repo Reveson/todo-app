@@ -11,22 +11,35 @@ public class TaskList extends JPanel {
 
     private CheckBoxList checkBoxList;
     private JScrollPane scrollPane;
-    private List<Task> taskList;
+    private List<Task> tasks;
+    private static TaskList taskList;
 
-    public TaskList(List<Task> taskList) {
+    public static TaskList init(List<Task> tasks) {
+        JPanel panel = MainPanel.getMainPanel();
+        if(taskList != null) {
+            panel.remove(taskList);
+        }
+        taskList = new TaskList(tasks);
 
-        this.taskList = taskList;
+        panel.add(taskList);
+        panel.revalidate();
+        panel.repaint();
+        return TaskList.taskList;
+    }
+
+    public static TaskList getTaskList() {
+        if(taskList != null) {
+            return taskList;
+        }
+        throw new NullPointerException("You need to init TaskList first!");
+    }
+
+    private TaskList(List<Task> tasks) {
+
+        this.tasks = tasks;
 
         initAllComponents();
         initAllListFields();
-//
-//        JCheckBox newCheckBox = new JCheckBox("testing here");
-//
-//        model.addElement(newCheckBox);
-//        model.addElement(new JCheckBox("Checkbox1"));
-//        model.addElement(new JCheckBox("Checkbox2"));
-//        model.addElement(new JCheckBox("Checkbox3"));
-
 
         this.add(scrollPane);
         this.setLayout(null);
@@ -36,7 +49,7 @@ public class TaskList extends JPanel {
     @Override
     public void setBounds(int x, int y, int width, int height) {
         super.setBounds(x,y,width,height);
-
+    //TODO check those font sizes
         Font oldFont = checkBoxList.getFont();
         Font scaledFont = new Font(oldFont.getName(), oldFont.getStyle(), height/15);
         checkBoxList.setFont(scaledFont);
@@ -59,6 +72,7 @@ public class TaskList extends JPanel {
         panel.setLayout(new GridBagLayout());
         panel.add(checkBoxList, gbc);
 
+
         scrollPane = new JScrollPane(panel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -66,10 +80,9 @@ public class TaskList extends JPanel {
     }
 
     private void initAllListFields() {
-        if(taskList != null && taskList.size() > 0) {
-            for(Task task : taskList) {
+        if(tasks != null && tasks.size() > 0) {
+            for(Task task : tasks) {
                 checkBoxList.addElement(task);
-                //TODO add functionallity to view task details
             }
         }
     }
