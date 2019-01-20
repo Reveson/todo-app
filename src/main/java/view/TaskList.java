@@ -1,5 +1,6 @@
 package view;
 
+import model.Project;
 import model.Task;
 
 import javax.swing.*;
@@ -13,8 +14,20 @@ public class TaskList extends JPanel {
     private JScrollPane scrollPane;
     private List<Task> tasks;
     private static TaskList taskList;
+    private static Project project;
+    private boolean withOptionNewTask = false;
+
+    public static TaskList init(Project project) {
+        TaskList.project = project;
+        return initInner(project.getTasks());
+    }
 
     public static TaskList init(List<Task> tasks) {
+        TaskList.project = null;
+        return initInner(tasks);
+    }
+
+    private static TaskList initInner(List<Task> tasks) {
         JPanel panel = MainPanel.getMainPanel();
         if(taskList != null) {
             panel.remove(taskList);
@@ -27,7 +40,7 @@ public class TaskList extends JPanel {
         return TaskList.taskList;
     }
 
-    public static TaskList getTaskList() {
+    public static TaskList getTaskList(Project project) {
         if(taskList != null) {
             return taskList;
         }
@@ -35,7 +48,9 @@ public class TaskList extends JPanel {
     }
 
     private TaskList(List<Task> tasks) {
-
+        if(this.project != null) {
+            withOptionNewTask = true;
+        }
         this.tasks = tasks;
 
         initAllComponents();
@@ -59,7 +74,12 @@ public class TaskList extends JPanel {
     }
 
     private void initAllComponents() {
-        checkBoxList = CheckBoxList.getNewList();
+        if(withOptionNewTask) {
+            checkBoxList = CheckBoxList.getNewList(project);
+        }
+        else {
+            checkBoxList = CheckBoxList.getNewList();
+        }
 
         JPanel panel = new JPanel();
 //        panel.add(checkBoxList);

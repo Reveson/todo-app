@@ -9,22 +9,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.MainPanel;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class TodoHelper extends JFrame {
 
-    private AppConfig config = ConfigFactory.create(AppConfig.class);
-    private ResourceBundle text = ResourceBundle
+    private static  AppConfig config = ConfigFactory.create(AppConfig.class);
+    private static ResourceBundle text = ResourceBundle
             .getBundle("lang", new Locale(config.language(), config.country()));
     private Logger logger = LoggerFactory.getLogger(TodoHelper.class);
+    private static JFrame app;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            JFrame frame = new TodoHelper();
-            frame.setVisible(true);
+            app = new TodoHelper();
+            app.setVisible(true);
         });
     }
 
@@ -45,6 +50,16 @@ public class TodoHelper extends JFrame {
         setTitle("TODO Helper");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public static void shutDownTheApp() {
+        app.setVisible(false);
+        restartPrompt();
+        app.dispose();
+    }
+
+    private static void restartPrompt() {
+        JOptionPane.showMessageDialog(app, text.getString("restartMonit"));
     }
 
 }

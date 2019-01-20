@@ -55,12 +55,7 @@ public class MainPanel extends JPanel {
     }
 
     private void initCalendar() {
-        //TODO
-//        JXDatePicker picker = new JXDatePicker();
-//        picker.setDate(Calendar.getInstance().getTime());
-//        picker.setFormats(new SimpleDateFormat("dd~MM~yyyy"));
-//        this.add(picker);
-//        picker.setBounds(500,500,200,40);
+        //TODO connect calendar with tasks
         JXMonthView calendar = new JXMonthView();
         calendar.setLocale(new Locale(config.language(), config.country()));
         calendar.setDaysOfTheWeek(text.getString("daysOfWeak").split(","));
@@ -74,52 +69,6 @@ public class MainPanel extends JPanel {
     private void initUserBtn() {
         //TODO make a user button, that redirects to user panel
 
-
-        //TODO To be removed, just testing here
-//        ChecklistCreation cList = new ChecklistCreation();
-//        add(cList);
-//        cList.setBounds(400,400,200,30);
-//
-//        TaskNote note = new TaskNote("Username", Instant.now(), config.lorem());
-//        add(note);
-//        note.setBounds(700,200,300,250);
-//
-//        TaskChecklist list =
-//                new TaskChecklist("Username",
-//                        Instant.now(),
-//                        new String[] {"field1", "field2", "field3", "fielddd4"});
-//        add(list);
-//        list.setBounds(300,50,300,250);
-//
-//        Task task2 = new Task();
-//        task2.setName("Project X");
-//        TaskMenu taskMenu = new TaskMenu(task2);
-//        int taskMenuWidth = (int)(config.windowWidth()*0.25);
-//        int taskMenuHeight = config.windowHeight();
-//        taskMenu.setBounds(config.windowWidth()-taskMenuWidth,
-//                0,
-//                taskMenuWidth,
-//                taskMenuHeight);
-//        taskMenu.init();
-//        add(taskMenu);
-
-//        ArrayList<Task> taskList = new ArrayList<>();
-//        for(int i = 0; i < 4; i++) {
-//            Task taskToAdd = new Task();
-//            taskToAdd.setName("zadanie "+(i+1));
-//            taskList.add(taskToAdd);
-//        }
-//        TaskList task = new TaskList(taskList);
-//        int taskWidth = (int)(config.windowWidth() - taskMenuWidth - config.windowWidth()/6);
-//        int taskHeight = config.windowHeight();
-//        add(task);
-//
-//        task.setBounds(config.windowWidth()/6,
-//                0,
-//                taskWidth,
-//                taskHeight);
-
-
     }
 
     private void initListHide() {
@@ -128,8 +77,10 @@ public class MainPanel extends JPanel {
                 if(event instanceof MouseEvent){
                     MouseEvent evt = (MouseEvent)event;
                     if(evt.getID() == MouseEvent.MOUSE_CLICKED){
-                        System.out.println("mouse clicked at: " + evt.getPoint());
+//                        System.out.println("mouse clicked at: " + evt.getPoint());
                         ProjectsList.getList().checkIfShouldBeClosed(evt.getPoint());
+                        CategoriesList.getList().checkIfShouldBeClosed(evt.getPoint());
+                        PrioritiesList.getList().checkIfShouldBeClosed(evt.getPoint());
                     }
                 }
             }

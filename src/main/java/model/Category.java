@@ -3,7 +3,7 @@ package model;
 
 import java.util.List;
 
-public class Project{
+public class Category {
     private long id;
     private String name;
     private List<Task> tasks;
@@ -24,11 +24,8 @@ public class Project{
         this.name = name;
     }
 
+
     public List<Task> getTasks() {
         return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
     }
 }

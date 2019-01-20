@@ -2,6 +2,8 @@ package view;
 
 import app.AppConfig;
 import app.WrongDateFormatException;
+import controller.DataManager;
+import model.Project;
 import model.Task;
 import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
@@ -10,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +30,9 @@ public class TaskMenu extends JPanel {
     private JButton categoryBox;
     private JButton priorityBox;
 
+    private JButton editButton;
+    private JButton deleteButton;
+
     private JButton textButton;
     private JButton checklistButton;
     private JTextArea textInput;
@@ -38,6 +40,7 @@ public class TaskMenu extends JPanel {
     private JButton taskInfoAddButton;
 
     private int upperMenuYCoordEnd;
+    private int updateDeleteCoordEnd;
 
     private AppConfig config = ConfigFactory.create(AppConfig.class);
     private ResourceBundle text = ResourceBundle
@@ -67,6 +70,7 @@ public class TaskMenu extends JPanel {
     public void init() {
         initTitle();
         initUpperMenu();
+        initUpdateDeleteMenu();
         initMiddleMenu();
     }
 
@@ -122,6 +126,59 @@ public class TaskMenu extends JPanel {
         this.add(priorityBox);
     }
 
+    private void initUpdateDeleteMenu() {
+        editButton = new JButton(text.getString("editButton"));
+        deleteButton = new JButton(text.getString("deleteButton"));
+
+        int menuWidth = this.getWidth();
+        int componentWidth = (int)(menuWidth*0.40);
+        int componentHeight = (int)(menuWidth*0.09);
+        int menuYCoord = upperMenuYCoordEnd + componentHeight;
+//        int menuXCoord = (menuWidth - componentWidth*2)/2;
+        int menuXCoord = (int)((menuWidth/2 - componentWidth)*0.9);
+        updateDeleteCoordEnd = menuYCoord+componentHeight;
+
+        editButton.setBounds(menuXCoord, menuYCoord, componentWidth, componentHeight);
+        deleteButton.setBounds(menuWidth-menuXCoord-componentWidth, menuYCoord, componentWidth, componentHeight);
+
+        setListenersForUpdateDeleteMenu();
+
+        this.add(editButton);
+        this.add(deleteButton);
+    }
+
+    public void setListenersForUpdateDeleteMenu() {
+        editButton.addActionListener(this::editButtonListener);
+        deleteButton.addActionListener(this::deleteButtonListener);
+    }
+
+    private void editButtonListener(ActionEvent e) {
+        JTextField textField = new JTextField();
+        Object[] fields = {
+                text.getString("askForNewName"),
+                textField
+        };
+
+        int result = JOptionPane.showConfirmDialog(this, fields, text.getString("editButton"), JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION) {
+            if(textField.getText() != null && !textField.getText().equals("")) {
+                DataManager.getManager().getTaskController().updateTask(task, textField.getText());
+            }
+        }
+
+    }
+
+    private void deleteButtonListener(ActionEvent e) {
+        Object[] fields = {
+                text.getString("confirmDelete"),
+        };
+
+        int result = JOptionPane.showConfirmDialog(this, fields, text.getString("deleteButton"), JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION) {
+            DataManager.getManager().getTaskController().deleteTask(task);
+        }
+    }
+
     private void initMiddleMenu() {
         textButton = new JButton(text.getString("taskMenuTxtButton"));
         checklistButton = new JButton(text.getString("taskMenuListButton"));
@@ -133,7 +190,7 @@ public class TaskMenu extends JPanel {
         int menuWidth = this.getWidth();
         int componentWidth = (int)(menuWidth*0.45);
         int componentHeight = (int)(menuWidth*0.08);
-        int menuYCoord = upperMenuYCoordEnd + componentHeight;
+        int menuYCoord = updateDeleteCoordEnd + componentHeight;
         int menuXCoord = (menuWidth - componentWidth*2)/2;
 
         textButton.setBounds(menuXCoord, menuYCoord, componentWidth, componentHeight);
@@ -161,12 +218,12 @@ public class TaskMenu extends JPanel {
     }
 
     private void setListenersForMiddleMenu() {
-        textButton.addActionListener(this::textButtonButtonListener);
+        textButton.addActionListener(this::textButtonListener);
         checklistButton.addActionListener(this::checklistButtonListener);
         taskInfoAddButton.addActionListener(this::taskInfoAddButtonListener);
     }
 
-    private void textButtonButtonListener(ActionEvent e) {
+    private void textButtonListener(ActionEvent e) {
         if(textInput.isVisible()) {
             textInput.setVisible(false);
             taskInfoAddButton.setVisible(false);
@@ -196,7 +253,22 @@ public class TaskMenu extends JPanel {
     }
 
     private void taskInfoAddButtonListener(ActionEvent e) {
-
+        if(checklistCreation.isVisible()) { //add checklist
+            ArrayList<String> list = checklistCreation.getChecklistFields();
+            if(list.size() > 0) {
+                DataManager.getManager().getTaskController().addChecklist(task, list);
+                checklistCreation.reset();
+                checklistButtonListener(null);
+            }
+        }
+        else if(textInput.isVisible())  { //add comment
+            String text = textInput.getText();
+            if(text != null && !text.equals("")) {
+                DataManager.getManager().getTaskController().addComment(task, text);
+                textInput.setText("");
+                textButtonListener(null); //to hide the input
+            }
+        }
     }
 
     private void setListenersForUpperMenu() {
@@ -217,6 +289,8 @@ public class TaskMenu extends JPanel {
                 passedRightOrExited = true;
                 if(deadline != null) { //it happens when user clicks "cancel"
                     deadlineDate = getTypedInDate(deadline);
+                    DataManager.getManager().getTaskController().setDeadline(task, deadlineDate);
+
                 }
             }
             catch (WrongDateFormatException exception) {
@@ -230,8 +304,14 @@ public class TaskMenu extends JPanel {
     }
     private void timeNeededBoxListener(ActionEvent e) {
         String timeNeeded = showPopupDialog(text.getString("timeNeeded"),text.getString("timeNeededInstruction"), null);
-        if(timeNeeded != null) {
-
+        if(timeNeeded != null ) {
+            try {
+                int time = Integer.valueOf(timeNeeded);
+                DataManager.getManager().getTaskController().setTimeNeeded(task, time);
+            }
+            catch (NumberFormatException ne) {
+                JOptionPane.showMessageDialog(this, text.getString("wrongNumberFormat"));
+            }
         }
 
     }
@@ -246,14 +326,20 @@ public class TaskMenu extends JPanel {
         };
 
         JOptionPane.showConfirmDialog(this, fields, text.getString("repeatEvery"), JOptionPane.OK_CANCEL_OPTION);
+        //TODO calculate here when task should be repeated
     }
 
     private void projectBoxListener(ActionEvent e) {
-        String[] projects = null; //TODO
-        projects = new String[] {"pro1", "project2", "pdfgdgmndfkgdjkgn", "project 3,5"}; //TODO do usunięcia
-        String chosenProject = showPopupDialog(text.getString("project"),null, projects);
+        String[] projectsNames = null; //TODO
+        ArrayList<Project> projectList = new ArrayList<>(DataManager.getManager().getProjectController().getList());
+        projectsNames = new String[projectList.size()];
+        int i  = 0;
+        for(Project project : projectList) {
+            projectsNames[i++] = project.getName();
+        }
+        String chosenProject = showPopupDialog(text.getString("project"),null, projectsNames);
         if(chosenProject != null) {
-
+            DataManager.getManager().getTaskController().setProject(task, chosenProject);
         }
     }
     private void categoryBoxListener(ActionEvent e) {
@@ -261,7 +347,7 @@ public class TaskMenu extends JPanel {
         categories = new String[] {"cat1", "category2", "dsfsdf", "categoryyyy"}; //TODO do usunięcia
         String chosenCategory = showPopupDialog(text.getString("category"),null, categories);
         if(chosenCategory != null) {
-
+            DataManager.getManager().getTaskController().setCategory(task, chosenCategory);
         }
 
     }
@@ -270,7 +356,7 @@ public class TaskMenu extends JPanel {
         String chosenPriority = showPopupDialog(text.getString("priority"),null, priorities);
         if(chosenPriority != null) {
             int priorityLevel = chosenPriority.length();
-            //TODO
+            DataManager.getManager().getTaskController().setPriority(task, priorityLevel);
         }
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 public class ChecklistCreation extends JComponent {
     private List<ChecklistCreationRow> checkFields = new ArrayList<>();
     private int rowWidth, rowHeight;
+    private int originalHeight = 0;
     private JButton applyButton;
 
     public ChecklistCreation(JButton applyButton) {
@@ -51,22 +52,44 @@ public class ChecklistCreation extends JComponent {
         });
     }
 
-    public void setRowSize(int width, int height) {
+    private void setRowSize(int width, int height) {
         rowWidth=width;
         rowHeight=height;
+    }
+
+    public void reset() {
+        checkFields = new ArrayList<>();
+        this.removeAll();
+        this.setBounds(this.getX(), this.getY(), rowWidth, originalHeight);
+        addRow();
     }
 
     @Override
     public void setBounds(int x, int y, int width, int height) {
         super.setBounds(x,y,width,height);
 
+        if(originalHeight == 0) {
+            originalHeight = height;
+        }
+
         int fields = checkFields.size();
-        int rowHeight = fields == 0 ? height : height/fields;
+        int rowHeight = fields == 0 ? height : originalHeight;
         for(int i = 0; i < fields; i++) {
             int yPos = i*rowHeight;
             checkFields.get(i).setBounds(0, yPos, width, rowHeight);
         }
         setRowSize(width, rowHeight);
+    }
+
+    public ArrayList<String> getChecklistFields() {
+        ArrayList<String> fields = new ArrayList<>();
+        for(ChecklistCreationRow row : checkFields) {
+            String rowText = row.getText();
+            if(rowText != null && !rowText.equals("")) {
+                fields.add(rowText);
+            }
+        }
+        return fields;
     }
 
 
@@ -81,6 +104,10 @@ public class ChecklistCreation extends JComponent {
             xButton.setEnabled(false);
             this.add(textfield);
             this.add(xButton);
+        }
+
+        public String getText() {
+            return textfield.getText();
         }
 
         @Override

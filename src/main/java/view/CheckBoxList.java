@@ -1,7 +1,9 @@
 package view;
 
 import app.AppConfig;
+import controller.DataManager;
 import javafx.scene.control.CheckBox;
+import model.Project;
 import model.Task;
 import org.aeonbits.owner.ConfigFactory;
 
@@ -24,6 +26,7 @@ public class CheckBoxList extends JList<JCheckBox> {
     private AppConfig config = ConfigFactory.create(AppConfig.class);
     private ResourceBundle text = ResourceBundle
             .getBundle("lang", new Locale(config.language(), config.country()));
+    private Project project;
 
     private CheckBoxList() {
         setCellRenderer(new CellRenderer());
@@ -35,7 +38,6 @@ public class CheckBoxList extends JList<JCheckBox> {
                         case 1:
                             //there is no need for using loop, if indexes are equal
                             String checkBoxText = getModel().getElementAt(index).getText();
-                            System.out.println("AAA:"+checkBoxText);
                             if(index < listOfTasks.size() && checkBoxText.equals(listOfTasks.get(index).getName())) {
                                 showTaskDetails(listOfTasks.get(index));
                             }
@@ -53,6 +55,11 @@ public class CheckBoxList extends JList<JCheckBox> {
                             break;
                         case 2:
                             JCheckBox checkbox = (JCheckBox) getModel().getElementAt(index);
+                            for(Task task : listOfTasks) {
+                                if(checkbox.getText().equals(task.getName())) {
+                                    DataManager.getManager().getTaskController().setSelected(task, !checkbox.isSelected());
+                                }
+                            }
                             checkbox.setSelected(!checkbox.isSelected());
                             repaint();
                             break;
@@ -85,8 +92,8 @@ public class CheckBoxList extends JList<JCheckBox> {
 
         int buttonClicked = JOptionPane.showConfirmDialog(this, fields, text.getString("newTaskPrompt"),
                 JOptionPane.OK_CANCEL_OPTION);
-        if(buttonClicked == JOptionPane.DEFAULT_OPTION && !taskName.getText().equals("")) {
-            //TODO add new task here
+        if(buttonClicked == JOptionPane.OK_OPTION && taskName.getText() != null && !taskName.getText().equals("")) {
+            DataManager.getManager().getTaskController().addNewTask(project);
         }
         else {
             showErrorMessage();
@@ -94,13 +101,16 @@ public class CheckBoxList extends JList<JCheckBox> {
     }
 
     private void showErrorMessage() {
+
         JOptionPane.showMessageDialog(this, text.getString("addingTaskFailed"));
     }
-    private CheckBoxList(ListModel<JCheckBox> model){
+
+    private CheckBoxList(ListModel<JCheckBox> model, Project project){
         this();
         setModel(model);
         JCheckBox newTaskButton = new JCheckBox(text.getString("addNewTask"));
         this.model.addElement(newTaskButton);
+        this.project = project;
     }
 
     @Override
@@ -108,6 +118,17 @@ public class CheckBoxList extends JList<JCheckBox> {
         super.setModel(model);
         this.model = (DefaultListModel<JCheckBox>)model;
     }
+
+    public static CheckBoxList getNewList(Project project) {
+        DefaultListModel<JCheckBox> model = new DefaultListModel<>();
+        return new CheckBoxList(model, project);
+    }
+
+    private CheckBoxList(ListModel<JCheckBox> model) {
+        this();
+        setModel(model);
+    }
+
 
     public static CheckBoxList getNewList() {
         DefaultListModel<JCheckBox> model = new DefaultListModel<>();
@@ -118,7 +139,9 @@ public class CheckBoxList extends JList<JCheckBox> {
         if(model.getSize() > 0)
             model.removeElementAt(model.getSize()-1); //remove "add new task" button so this button will be the last one
         listOfTasks.add(task);
-        model.addElement(new JCheckBox(task.getName()));
+        JCheckBox newCheckBox = new JCheckBox(task.getName());
+        newCheckBox.setSelected(DataManager.getManager().getTaskController().isSelected(task));
+        model.addElement(newCheckBox);
         JCheckBox newTaskButton = new JCheckBox(text.getString("addNewTask"));
         this.model.addElement(newTaskButton);
     }
@@ -141,11 +164,18 @@ public class CheckBoxList extends JList<JCheckBox> {
             checkbox.setBorderPainted(true);
             checkbox.setBorder(isSelected ? UIManager
                     .getBorder("List.focusCellHighlightBorder") : noFocusBorder);
-            Icon normal = createImageIcon("/img/checkbox-outline-blank.svg.png", "checkbox-outline", checkbox.getFont().getSize());
-            Icon selected = createImageIcon("/img/checkbox-outline.svg.png", "checkbox-outline-blank", checkbox.getFont().getSize());
+            Icon normal = createImageIcon("/img/no_tick_small.png", "not selected", checkbox.getFont().getSize());
+            Icon selected = createImageIcon("/img/tick_small.png", "selected", checkbox.getFont().getSize());
+            Icon blank = createImageIcon("/img/blank.png", "blank", checkbox.getFont().getSize());
 
-            checkbox.setIcon(normal);
-            checkbox.setSelectedIcon(selected);
+            if(!checkbox.getText().equals(text.getString("addNewTask"))) {
+                checkbox.setIcon(normal);
+                checkbox.setSelectedIcon(selected);
+            }
+            else {
+                checkbox.setIcon(blank);
+                checkbox.setIcon(blank);
+            }
 
             return checkbox;
         }

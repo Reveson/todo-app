@@ -1,5 +1,6 @@
 package controller;
 
+import app.TodoHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Task;
@@ -19,14 +20,20 @@ public class Controller<T> {
         try {
             this.urlAdress = new URL(urlAdress);
         } catch (MalformedURLException e) {
-            //TODO add popup dialog that kills an app
             e.printStackTrace();
+            TodoHelper.shutDownTheApp();
         }
     }
 
 
-    public List<T> getList() throws IOException {
-        List<T> taskList = mapper.readValue(urlAdress, new TypeReference<List<T>>() {});
+    public List<T> getList() {
+        List<T> taskList = null;
+        try {
+            taskList = mapper.readValue(urlAdress, new TypeReference<List<T>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            TodoHelper.shutDownTheApp();
+        }
         return taskList;
     }
 
