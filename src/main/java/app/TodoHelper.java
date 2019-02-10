@@ -4,6 +4,7 @@ package app;
 // http://www.jvider.com/
 //======================================================
 
+import controller.DataManager;
 import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class TodoHelper extends JFrame {
     }
 
     private TodoHelper() {
-
+        showLogInMonit();
         initGUI();
     }
 
@@ -60,6 +61,27 @@ public class TodoHelper extends JFrame {
 
     private static void restartPrompt() {
         JOptionPane.showMessageDialog(app, text.getString("restartMonit"));
+    }
+
+    private static boolean showLogInMonit() {
+        JTextField loginField = new JTextField();
+        JTextField passField = new JTextField();
+        Object[] fields = {
+                "login: ",
+                loginField,
+                "password: ",
+                passField
+        };
+
+        int result = JOptionPane.showConfirmDialog(app, fields, text.getString("editButton"), JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION) {
+            if(loginField.getText() != null && !loginField.getText().equals("") &&
+                    passField.getText() != null && !passField.getText().equals("")) {
+                boolean res = DataManager.getManager().getAuthController().logIn("gregory531", "1234");
+                System.out.println("res:"+res);
+            }
+        }
+        return false;
     }
 
 }

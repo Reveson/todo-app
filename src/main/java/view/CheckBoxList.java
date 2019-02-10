@@ -140,7 +140,10 @@ public class CheckBoxList extends JList<JCheckBox> {
             model.removeElementAt(model.getSize()-1); //remove "add new task" button so this button will be the last one
         listOfTasks.add(task);
         JCheckBox newCheckBox = new JCheckBox(task.getName());
-        newCheckBox.setSelected(DataManager.getManager().getTaskController().isSelected(task));
+        //todo uncomment
+//        newCheckBox.setSelected(DataManager.getManager().getTaskController().isSelected(task));
+        newCheckBox.setSelected(true);
+
         model.addElement(newCheckBox);
         JCheckBox newTaskButton = new JCheckBox(text.getString("addNewTask"));
         this.model.addElement(newTaskButton);
@@ -186,13 +189,11 @@ public class CheckBoxList extends JList<JCheckBox> {
                                       String description, int size) {
         java.net.URL imgURL = getClass().getResource(path);
         if (imgURL != null) {
-            //TODO is there a simpler way?
             ImageIcon icon = new ImageIcon(imgURL, description);
             Image img = icon.getImage().getScaledInstance(size, size,  java.awt.Image.SCALE_SMOOTH);
             return new ImageIcon(img);
 
         } else {
-            //TODO should be in LOG
             System.err.println("Couldn't find file: " + path);
             return null;
         }

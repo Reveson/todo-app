@@ -114,7 +114,6 @@ public class Settings {
 
     private void manageCategoriesListener(ActionEvent e) {
         ArrayList<Category> categories;
-        //TODO to be uncommented
         categories = new ArrayList<>(DataManager.getManager().getCategoryController().getList());
 
         String[] categoriesNames = new String[categories.size()];
@@ -195,7 +194,6 @@ public class Settings {
             }
         }
         else {
-            //TODO add error message
             TodoHelper.shutDownTheApp();
         }
     }

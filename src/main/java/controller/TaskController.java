@@ -76,22 +76,5 @@ public class TaskController extends Controller<Task> {
         return false;
     }
 
-//
-//    //TODO just for testing, to be deleted!
-//    public List<Task> getTaskList(String json) throws IOException {
-//        List<Task> taskList = mapper.readValue(json, new TypeReference<List<Task>>() {});
-//        return taskList;
-//    }
-//
-//    //TODO to be deleted
-//    public String getJson(List<Task> taskList) throws JsonProcessingException {
-//        String jsonString = mapper.writeValueAsString(taskList);
-//        return jsonString;
-//    }
-//
-//    public List<Task> getTaskList() throws IOException {
-//        List<Task> taskList = mapper.readValue(urlAdress, new TypeReference<List<Task>>() {});
-//        return taskList;
-//    }
 
 }

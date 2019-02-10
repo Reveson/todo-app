@@ -55,7 +55,6 @@ public class MainPanel extends JPanel {
     }
 
     private void initCalendar() {
-        //TODO connect calendar with tasks
         JXMonthView calendar = new JXMonthView();
         calendar.setLocale(new Locale(config.language(), config.country()));
         calendar.setDaysOfTheWeek(text.getString("daysOfWeak").split(","));

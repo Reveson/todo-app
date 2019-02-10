@@ -60,9 +60,7 @@ public class TaskMenu extends JPanel {
     }
 
     private TaskMenu(Task task) {
-        //TODO check if null
         TaskMenu.task = task;
-        //TODO this needs to be removed, its just for visual testing
         setBackground(Color.gray);
         this.setLayout(null);
     }
@@ -282,7 +280,7 @@ public class TaskMenu extends JPanel {
 
     private void deadlineBoxListener(ActionEvent e) {
         String deadline = showPopupDialog(text.getString("deadline"),text.getString("deadlineInstruction"), null);
-        Date deadlineDate; //TODO
+        Date deadlineDate;
         boolean passedRightOrExited = false;
         while(!passedRightOrExited) {
             try {

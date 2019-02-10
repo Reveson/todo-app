@@ -6,9 +6,10 @@ import model.Task;
 
 public class DataManager {
     private static DataManager manager;
-    private ProjectController projectController;
+    private ProjectController projectController = new ProjectController("http://google.com/");
     private CategoriesController categoryController;
     private TaskController taskController;
+    private AuthController authController = new AuthController();
 
     private DataManager() {}
 
@@ -30,4 +31,6 @@ public class DataManager {
     public TaskController getTaskController() {
         return taskController;
     }
+
+    public AuthController getAuthController() { return authController; }
 }

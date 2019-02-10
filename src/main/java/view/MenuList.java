@@ -90,9 +90,6 @@ public abstract class MenuList {
 
     protected void discard() {
         list.setVisible(false);
-        logger.info("list elements: "+list.getModel().getElementAt(0));
-        logger.info("Removed list from JPanel.");
-        //TODO to be deleted
     }
 
     protected void show() {
